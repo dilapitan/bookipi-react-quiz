@@ -10,16 +10,16 @@ import BuilderDashboard from '@/components/quiz-builder/builder-dashboard'
 import PlayerDashboard from '@/components/quiz-player/player-dashboard'
 
 export default function Home() {
-  const { userType } = useAuth()
+  const { userType, isLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!userType) {
+    if (!isLoading && !userType) {
       router.push('/login')
     }
-  }, [userType, router])
+  }, [userType, isLoading, router])
 
-  if (!userType) {
+  if (isLoading || !userType) {
     return null
   }
 

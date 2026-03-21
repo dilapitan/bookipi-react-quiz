@@ -1,6 +1,18 @@
-import { useMutation, useQuery, type UseMutationOptions, type UseQueryOptions } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQuery,
+  type UseMutationOptions,
+  type UseQueryOptions,
+} from '@tanstack/react-query'
+
+import type {
+  Quiz,
+  QuizWithQuestions,
+  CreateQuiz,
+  UpdateQuiz,
+} from '@/schema/quizSchema'
+
 import { api } from './api'
-import type { Quiz, QuizWithQuestions, CreateQuiz, UpdateQuiz } from '@/schema/quizSchema'
 
 // Query Keys
 export const quizKeys = {
@@ -13,7 +25,9 @@ export const quizKeys = {
 }
 
 // Queries
-export function useQuizzes(options?: Omit<UseQueryOptions<Quiz[]>, 'queryKey' | 'queryFn'>) {
+export function useQuizzes(
+  options?: Omit<UseQueryOptions<Quiz[]>, 'queryKey' | 'queryFn'>
+) {
   return useQuery({
     queryKey: quizKeys.lists(),
     queryFn: () => api.get<Quiz[]>('/quizzes'),
@@ -44,7 +58,11 @@ export function useCreateQuiz(
 }
 
 export function useUpdateQuiz(
-  options?: UseMutationOptions<Quiz, Error, { quizId: number; quiz: UpdateQuiz }>
+  options?: UseMutationOptions<
+    Quiz,
+    Error,
+    { quizId: number; quiz: UpdateQuiz }
+  >
 ) {
   return useMutation({
     mutationFn: ({ quizId, quiz }: { quizId: number; quiz: UpdateQuiz }) =>

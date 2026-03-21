@@ -38,7 +38,7 @@ export function useUpdateQuestionPosition(
     }: {
       questionId: number
       position: number
-    }) => api.put<Question>(`/questions/${questionId}`, { position }),
+    }) => api.patch<Question>(`/questions/${questionId}`, { position }),
     ...options,
   })
 }

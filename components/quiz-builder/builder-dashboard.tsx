@@ -5,10 +5,10 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useQuizzes } from '@/services/quizQueries'
 
-import EmptyQuizCard from './empty-quiz-card'
-import ErrorQuizCard from './error-quiz-card'
-import LoaderQuizCard from './loader-quiz-card'
-import QuizCard from './quiz-card'
+import EmptyQuizCard from './quiz/empty-quiz-card'
+import ErrorQuizCard from './quiz/error-quiz-card'
+import LoaderQuizCard from './quiz/loader-quiz-card'
+import QuizCard from './quiz/quiz-card'
 
 export default function BuilderDashboard() {
   const { data: quizzes, isLoading, error } = useQuizzes()

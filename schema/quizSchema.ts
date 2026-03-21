@@ -24,7 +24,9 @@ export const updateQuizSchema = quizSchema
   })
   .partial()
 
-export const quizWithQuestionsSchema = quizSchema.extend(questionSchema.array())
+export const quizWithQuestionsSchema = quizSchema.extend({
+  questions: questionSchema.array(),
+})
 
 export type Quiz = z.infer<typeof quizSchema>
 export type CreateQuiz = z.infer<typeof createQuizSchema>

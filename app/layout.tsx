@@ -4,6 +4,7 @@ import { AuthProvider } from '@/app/context/auth-context'
 import { QueryProvider } from '@/app/context/query-context'
 import { ThemeProvider } from '@/app/context/theme-context'
 import { Navbar } from '@/components/navbar'
+import { Toaster } from '@/components/ui/sonner'
 
 import type { Metadata } from 'next'
 
@@ -33,6 +34,7 @@ export default function RootLayout({
             <AuthProvider>
               <Navbar />
               {children}
+              <Toaster />
             </AuthProvider>
           </ThemeProvider>
         </QueryProvider>

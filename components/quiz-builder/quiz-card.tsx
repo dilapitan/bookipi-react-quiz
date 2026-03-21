@@ -19,7 +19,7 @@ export default function QuizCard({ quiz }: { quiz: Quiz }) {
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <CardTitle className="text-violet-900 dark:text-violet-100 group-hover:text-violet-700 dark:group-hover:text-violet-300 line-clamp-2">
+            <CardTitle className="truncate w-48 md:w-60 text-violet-900 dark:text-violet-100 group-hover:text-violet-700 dark:group-hover:text-violet-300 line-clamp-2">
               {quiz.title}
             </CardTitle>
             <CardDescription className="mt-2 line-clamp-2">
@@ -39,15 +39,20 @@ export default function QuizCard({ quiz }: { quiz: Quiz }) {
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-center gap-4 text-sm text-violet-600 dark:text-violet-400">
-          <div className="flex items-center gap-1">
-            <Clock className="w-4 h-4" />
-            <span>{Math.floor(quiz.timeLimitSeconds / 60)} min</span>
-          </div>
+          {/* Quiz ID */}
           <div className="flex items-center gap-1">
             <FileText className="w-4 h-4" />
             <span>ID: {quiz.id}</span>
           </div>
+
+          {/* Timelimit */}
+          <div className="flex items-center gap-1">
+            <Clock className="w-4 h-4" />
+            <span>{Math.floor(quiz.timeLimitSeconds / 60)} min</span>
+          </div>
         </div>
+
+        {/* Created At */}
         <p className="text-xs text-gray-500 dark:text-gray-400">
           Created{' '}
           {formatDistanceToNow(new Date(quiz.createdAt), {

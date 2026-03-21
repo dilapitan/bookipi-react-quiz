@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google'
 
 import { AuthProvider } from '@/app/context/auth-context'
+import { QueryProvider } from '@/app/context/query-context'
 import { ThemeProvider } from '@/app/context/theme-context'
 import { Navbar } from '@/components/navbar'
 
@@ -27,12 +28,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
-        <ThemeProvider>
-          <AuthProvider>
-            <Navbar />
-            {children}
-          </AuthProvider>
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              <Navbar />
+              {children}
+            </AuthProvider>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   )

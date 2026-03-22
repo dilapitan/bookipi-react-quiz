@@ -1,6 +1,9 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical } from 'lucide-react'
+import { GripVertical, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import {
   Card,
@@ -9,9 +12,53 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import { Question } from '@/schema'
+import { useDeleteQuestion } from '@/services/questionQueries'
+import { quizKeys } from '@/services/quizQueries'
 
-export default function QuestionCard({ question }: { question: Question }) {
+export default function QuestionCard({
+  question,
+  displayPosition,
+}: {
+  question: Question
+  displayPosition?: number
+}) {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const queryClient = useQueryClient()
+
+  const deleteQuestion = useDeleteQuestion({
+    onSuccess: () => {
+      setIsDeleteDialogOpen(false)
+      queryClient.invalidateQueries({
+        queryKey: quizKeys.detail(question.quizId),
+      })
+      toast.success('Question deleted successfully', {
+        position: 'top-center',
+        classNames: {
+          toast:
+            'bg-green-50 dark:bg-green-900/30 text-green-900 dark:text-green-100 border-green-200 dark:border-green-800',
+        },
+      })
+    },
+    onError: error => {
+      toast.error(error.message || 'Failed to delete question', {
+        position: 'top-center',
+        classNames: {
+          toast:
+            'bg-red-50 dark:bg-red-900/30 text-red-900 dark:text-red-100 border-red-200 dark:border-red-800',
+        },
+      })
+    },
+  })
   const {
     attributes,
     listeners,
@@ -47,9 +94,20 @@ export default function QuestionCard({ question }: { question: Question }) {
             {/* Question Prompt */}
             <div className="flex-1">
               <CardTitle className="text-sm md:text-lg text-violet-900 dark:text-violet-100">
-                {question.position}.) {question.prompt}
+                {displayPosition !== undefined
+                  ? displayPosition
+                  : question.position}
+                .) {question.prompt}
               </CardTitle>
             </div>
+
+            {/* Delete button */}
+            <button
+              onClick={() => setIsDeleteDialogOpen(true)}
+              className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
           </div>
         </CardHeader>
 
@@ -78,7 +136,7 @@ export default function QuestionCard({ question }: { question: Question }) {
               </div>
 
               {/* No catch for missing correct answer because this field is required for MCQ questions */}
-              <div className="text-sm md:text-md font-medium">
+              <div className="text-sm md:text-md font-medium text-green-600">
                 Correct answer: {question.correctAnswer}
               </div>
             </div>
@@ -105,6 +163,34 @@ export default function QuestionCard({ question }: { question: Question }) {
           )}
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Question</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this question? This action cannot
+              be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => deleteQuestion.mutate(question.id)}
+              disabled={deleteQuestion.isPending}
+            >
+              {deleteQuestion.isPending ? 'Deleting...' : 'Delete'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

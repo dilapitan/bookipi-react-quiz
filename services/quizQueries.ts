@@ -66,7 +66,7 @@ export function useUpdateQuiz(
 ) {
   return useMutation({
     mutationFn: ({ quizId, quiz }: { quizId: number; quiz: UpdateQuiz }) =>
-      api.put<Quiz>(`/quizzes/${quizId}`, quiz),
+      api.patch<Quiz>(`/quizzes/${quizId}`, quiz),
     ...options,
   })
 }

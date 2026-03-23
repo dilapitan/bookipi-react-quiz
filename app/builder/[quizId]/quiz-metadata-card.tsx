@@ -32,7 +32,9 @@ export default function QuizMetadataCard({ quiz }: { quiz: Quiz }) {
   const updateQuizMutation = useUpdateQuiz({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: quizKeys.detail(quiz.id) })
-      toast.success('Quiz updated successfully')
+      toast.success('Quiz updated successfully', {
+        position: 'top-center',
+      })
       setIsEditing(false)
     },
     onError: error => {

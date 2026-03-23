@@ -6,6 +6,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { Plus } from 'lucide-react'
 import * as z from 'zod'
+import { toast } from 'sonner'
 
 import { useCreateQuiz } from '@/services/quizQueries'
 import { createQuizSchema } from '@/schema/quizSchema'
@@ -46,6 +47,9 @@ export default function CreateQuizCard() {
     onSuccess: data => {
       setOpen(false)
       form.reset()
+      toast.success('Quiz created successfully', {
+        position: 'top-center',
+      })
       router.push(`/builder/${data.id}`)
     },
   })

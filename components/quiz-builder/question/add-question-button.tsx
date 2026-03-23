@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+
 import { useQueryClient } from '@tanstack/react-query'
 import { Plus, X } from 'lucide-react'
 import { toast } from 'sonner'
@@ -24,9 +25,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import type { QuestionType } from '@/schema/questionSchema'
 import { useCreateQuestion } from '@/services/questionQueries'
 import { quizKeys } from '@/services/quizQueries'
-import type { QuestionType } from '@/schema/questionSchema'
 
 interface AddQuestionButtonProps {
   quizId: number
@@ -126,7 +127,9 @@ export default function AddQuestionButton({
       prompt: prompt.trim(),
       options: validOptions,
       correctAnswer:
-        questionType === 'mcq' ? correctAnswer.trim() : correctAnswer || undefined,
+        questionType === 'mcq'
+          ? correctAnswer.trim()
+          : correctAnswer || undefined,
       position: lastPosition + 1,
     })
   }
@@ -202,7 +205,9 @@ export default function AddQuestionButton({
                       <Input
                         placeholder={`Option ${index + 1}`}
                         value={option}
-                        onChange={e => handleOptionChange(index, e.target.value)}
+                        onChange={e =>
+                          handleOptionChange(index, e.target.value)
+                        }
                       />
                       {options.length > 2 && (
                         <Button
@@ -223,7 +228,8 @@ export default function AddQuestionButton({
             {/* Correct Answer */}
             <div className="space-y-2">
               <Label htmlFor="correctAnswer">
-                Correct Answer {questionType === 'mcq' ? '(required)' : '(optional)'}
+                Correct Answer{' '}
+                {questionType === 'mcq' ? '(required)' : '(optional)'}
               </Label>
               {questionType === 'mcq' ? (
                 <Select value={correctAnswer} onValueChange={setCorrectAnswer}>

@@ -1,10 +1,12 @@
+import { useState } from 'react'
+
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical, Trash2 } from 'lucide-react'
-import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { GripVertical, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -20,7 +22,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
 import { Question } from '@/schema'
 import { useDeleteQuestion } from '@/services/questionQueries'
 import { quizKeys } from '@/services/quizQueries'
@@ -95,7 +96,7 @@ export default function QuestionCard({
             <div className="flex-1">
               <CardTitle className="text-sm md:text-lg text-violet-900 dark:text-violet-100">
                 {displayPosition !== undefined
-                  ? displayPosition
+                  ? displayPosition + 1
                   : question.position}
                 .) {question.prompt}
               </CardTitle>

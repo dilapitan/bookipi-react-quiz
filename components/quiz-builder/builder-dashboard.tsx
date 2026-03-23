@@ -5,6 +5,7 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useQuizzes } from '@/services/quizQueries'
 
+import CreateQuizCard from './quiz/create-quiz-card'
 import EmptyQuizCard from './quiz/empty-quiz-card'
 import ErrorQuizCard from './quiz/error-quiz-card'
 import LoaderQuizCard from './quiz/loader-quiz-card'
@@ -34,13 +35,7 @@ export default function BuilderDashboard() {
           </div>
 
           {/* Add Quiz Button */}
-          <Button
-            size="lg"
-            className="bg-violet-600 hover:bg-violet-700 dark:bg-violet-700 dark:hover:bg-violet-600 text-white shadow-lg"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Create Quiz
-          </Button>
+          <CreateQuizCard />
         </div>
 
         {/* Quiz List */}

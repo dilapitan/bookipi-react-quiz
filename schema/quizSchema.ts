@@ -7,7 +7,7 @@ export const quizSchema = z.object({
   title: z.string(),
   description: z.string(),
   timeLimitSeconds: z.number(),
-  isPublished: z.boolean().default(true),
+  isPublished: z.boolean().default(false),
   createdAt: z.string(),
 })
 

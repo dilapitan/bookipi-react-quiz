@@ -1,4 +1,4 @@
-# Quiz Maker
+# Quizizy: Quiz Maker
 
 A React-based quiz application that allows users to create coding-related quizzes and take them with built-in anti-cheat features.
 
@@ -115,3 +115,8 @@ npm run dev
 ## Authentication
 
 Include the header `Authorization: Bearer dev-token` with API requests (or configure your own token in `.env`).
+
+For the UI, authentication is currently handled on the client side. The app uses
+React `Context API` and stores the user type in `localStorage`. Since the backend
+is minimal and does not implement authentication logic yet, this behavior is
+temporarily managed in the UI.

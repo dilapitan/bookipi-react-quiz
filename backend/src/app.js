@@ -6,10 +6,25 @@ const { db, migrate } = require("./db");
 function createApp() {
 	const app = express();
 	const API_TOKEN = process.env.API_TOKEN || "dev-token";
+	const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
+		? process.env.ALLOWED_ORIGINS.split(",").map((origin) => origin.trim())
+		: [];
 
 	migrate();
 
-	app.use(cors());
+	app.use(
+		cors({
+			origin: (origin, callback) => {
+				// Allow requests with no origin (like mobile apps or curl requests)
+				if (!origin) return callback(null, true);
+				if (ALLOWED_ORIGINS.includes(origin)) {
+					callback(null, true);
+				} else {
+					callback(new Error("Not allowed by CORS"));
+				}
+			},
+		}),
+	);
 	app.use(express.json({ limit: "1mb" }));
 
 	// Simple bearer auth
@@ -75,6 +90,11 @@ function createApp() {
 	}
 
 	// Routes
+
+	// Health check
+	app.get("/health", (req, res) => {
+		res.json({ status: "ok" });
+	});
 
 	// List quizzes
 	app.get("/quizzes", (req, res) => {

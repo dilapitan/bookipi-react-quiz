@@ -9,6 +9,7 @@ Quiz Maker is a full-stack application for creating and taking coding quizzes. U
 ## Features
 
 ### Builder Mode
+
 - Create quizzes with title and description
 - Add multiple question types (Multiple Choice, Short Answer)
 - Include optional code snippets in questions
@@ -16,6 +17,7 @@ Quiz Maker is a full-stack application for creating and taking coding quizzes. U
 - Set time limits for quizzes
 
 ### Player Mode
+
 - Load quizzes by ID
 - Navigate between questions
 - Submit answers and view results
@@ -59,6 +61,7 @@ bookipi-react-quiz/
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 20+
 - npm, yarn, pnpm, or bun
 
@@ -66,17 +69,21 @@ bookipi-react-quiz/
 
 1. Clone the repository
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Set up environment variables:
+
 ```bash
-cp env-example .env.local
+cp env-example .env
 ```
-Edit `.env.local` and configure your API URL and token if needed.
+
+Edit `.env` and configure your API URL and token if needed.
 
 4. Start the backend server (in a separate terminal):
+
 ```bash
 cd backend
 npm install
@@ -84,6 +91,7 @@ npm start
 ```
 
 5. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -106,4 +114,4 @@ npm run dev
 
 ## Authentication
 
-Include the header `Authorization: Bearer dev-token` with API requests (or configure your own token in `.env.local`).
+Include the header `Authorization: Bearer dev-token` with API requests (or configure your own token in `.env`).

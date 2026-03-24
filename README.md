@@ -8,10 +8,6 @@ The application is currently deployed on Vercel, with the backend running on a p
 
 Access it here: [Quizizy](https://bookipi-react-quiz.vercel.app/)
 
-## Screen Recording Demo
-
-<video src="https://res.cloudinary.com/deqgbvidg/video/upload/v1774345766/Screen_Recording_2026-03-24_at_5.47.37_PM_kguqzl.mov" controls></video>
-
 ## Description
 
 Quiz Maker is a full-stack application for creating and taking coding quizzes. Users can build quizzes with multiple question types, including multiple choice and short answer questions with optional code snippets. The player interface includes lightweight anti-cheat monitoring to track focus events and paste actions.

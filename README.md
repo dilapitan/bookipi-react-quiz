@@ -86,7 +86,7 @@ npm install
 cp env-example .env
 ```
 
-Edit `.env` and configure your API URL and token if needed.
+Edit `.env` and configure your API URL and token if needed. Copy your backend end URL as well as a token. For simplicity, feel free to use `dev-token`.
 
 4. Start the backend server (in a separate terminal):
 

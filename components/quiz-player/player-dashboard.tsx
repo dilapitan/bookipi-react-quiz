@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+import { useSearchParams, useRouter } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -18,8 +20,20 @@ import { useQuizzes } from '@/services/quizQueries'
 import QuizPlayer from './player/quiz-player'
 
 export default function PlayerDashboard() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const quizIdFromUrl = searchParams.get('quizId')
+
   const [quizId, setQuizId] = useState<string>('')
   const [startedQuizId, setStartedQuizId] = useState<number | null>(null)
+
+  // Reset quiz when URL changes (no quizId param means user clicked navbar)
+  useEffect(() => {
+    if (!quizIdFromUrl) {
+      setStartedQuizId(null)
+      setQuizId('')
+    }
+  }, [quizIdFromUrl])
 
   const { data: quizzes, isLoading } = useQuizzes()
 
@@ -27,12 +41,14 @@ export default function PlayerDashboard() {
     const id = parseInt(quizId)
     if (!isNaN(id) && id > 0) {
       setStartedQuizId(id)
+      router.push(`/?quizId=${id}`)
     }
   }
 
   const handleBackToDashboard = () => {
     setStartedQuizId(null)
     setQuizId('')
+    router.push('/')
   }
 
   if (startedQuizId) {

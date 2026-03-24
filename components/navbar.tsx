@@ -45,20 +45,21 @@ export function Navbar() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-3">
-              <Link href="/">
-                {userType && (
-                  <div className="flex items-center gap-2">
-                    {isQuizBuilder ? (
-                      <ShieldUser className={`w-5 h-5 text-white`} />
-                    ) : (
-                      <LucideUserPen className={`w-5 h-5 text-white`} />
-                    )}
-                    <span className={`text-sm md:text-xl font-bold text-white`}>
-                      {userType}
-                    </span>
-                  </div>
-                )}
-              </Link>
+              {userType && (
+                <button
+                  onClick={() => router.push('/')}
+                  className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+                >
+                  {isQuizBuilder ? (
+                    <ShieldUser className={`w-5 h-5 text-white`} />
+                  ) : (
+                    <LucideUserPen className={`w-5 h-5 text-white`} />
+                  )}
+                  <span className={`text-sm md:text-xl font-bold text-white`}>
+                    {userType}
+                  </span>
+                </button>
+              )}
             </div>
 
             {/* Desktop logout button */}

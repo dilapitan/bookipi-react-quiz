@@ -26,6 +26,7 @@ export default function QuizMetadataCard({ quiz }: { quiz: Quiz }) {
   const [editForm, setEditForm] = useState<UpdateQuiz>({
     title: quiz.title,
     description: quiz.description,
+    timeLimitSeconds: quiz.timeLimitSeconds,
     isPublished: quiz.isPublished,
   })
 
@@ -53,6 +54,7 @@ export default function QuizMetadataCard({ quiz }: { quiz: Quiz }) {
     setEditForm({
       title: quiz.title,
       description: quiz.description,
+      timeLimitSeconds: quiz.timeLimitSeconds,
       isPublished: quiz.isPublished,
     })
     setIsEditing(false)
@@ -65,6 +67,7 @@ export default function QuizMetadataCard({ quiz }: { quiz: Quiz }) {
           <div className="flex-1 space-y-3">
             {isEditing ? (
               <>
+                {/* Title */}
                 <Input
                   value={editForm.title}
                   onChange={e =>
@@ -76,6 +79,8 @@ export default function QuizMetadataCard({ quiz }: { quiz: Quiz }) {
                   className="text-3xl font-bold"
                   placeholder="Quiz title"
                 />
+
+                {/* Description */}
                 <Textarea
                   value={editForm.description}
                   onChange={e =>
@@ -88,17 +93,39 @@ export default function QuizMetadataCard({ quiz }: { quiz: Quiz }) {
                   placeholder="Quiz description"
                   rows={2}
                 />
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={editForm.isPublished}
-                    onCheckedChange={checked =>
-                      setEditForm(prev => ({
-                        ...prev,
-                        isPublished: checked,
-                      }))
-                    }
-                  />
-                  <label className="text-sm">Published</label>
+                <div className="flex items-center gap-4">
+                  {/* Time limit */}
+                  <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium">
+                      Time Limit (seconds):
+                    </label>
+                    <Input
+                      type="number"
+                      value={editForm.timeLimitSeconds}
+                      onChange={e =>
+                        setEditForm(prev => ({
+                          ...prev,
+                          timeLimitSeconds: Number(e.target.value),
+                        }))
+                      }
+                      className="w-24"
+                      min={0}
+                    />
+                  </div>
+
+                  {/* Published switch */}
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={editForm.isPublished}
+                      onCheckedChange={checked =>
+                        setEditForm(prev => ({
+                          ...prev,
+                          isPublished: checked,
+                        }))
+                      }
+                    />
+                    <label className="text-sm">Published</label>
+                  </div>
                 </div>
               </>
             ) : (
@@ -167,7 +194,7 @@ export default function QuizMetadataCard({ quiz }: { quiz: Quiz }) {
           <div className="flex items-center gap-2">
             <Clock className="w-5 h-5" />
             <span className="font-medium">
-              Time Limit:
+              Time Limit:{' '}
               {Math.floor(quiz.timeLimitSeconds / 60) > 0
                 ? `${Math.floor(quiz.timeLimitSeconds / 60)} minutes`
                 : `${Math.floor(quiz.timeLimitSeconds)} seconds`}

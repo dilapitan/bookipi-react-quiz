@@ -20,6 +20,7 @@ export const updateQuizSchema = quizSchema
   .pick({
     title: true,
     description: true,
+    timeLimitSeconds: true,
     isPublished: true,
   })
   .partial()

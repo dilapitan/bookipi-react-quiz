@@ -1,8 +1,5 @@
 'use client'
 
-import { Plus } from 'lucide-react'
-
-import { Button } from '@/components/ui/button'
 import { useQuizzes } from '@/services/quizQueries'
 
 import CreateQuizCard from './quiz/create-quiz-card'

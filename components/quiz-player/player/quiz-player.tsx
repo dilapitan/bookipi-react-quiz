@@ -6,18 +6,18 @@ import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useQuizWithQuestions } from '@/services/quizQueries'
 import {
   useStartAttempt,
   useAnswerQuestion,
   useSubmitAttempt,
 } from '@/services/attemptQueries'
+import { useQuizWithQuestions } from '@/services/quizQueries'
 
 import QuestionCard from '../question-card'
-import ResultsDashboard from '../results/results-dashboard'
-import NoQuestionsFoundCard from './no-questions-found-card'
 import ErrorQuestionCard from './error-question-card'
 import LoadingQuestionCard from './loading-question-card'
+import NoQuestionsFoundCard from './no-questions-found-card'
+import ResultsDashboard from '../results/results-dashboard'
 
 interface QuizPlayerProps {
   quizId: number
@@ -60,7 +60,7 @@ export default function QuizPlayer({ quizId, onBack }: QuizPlayerProps) {
         }
       )
     }
-  }, [quiz, quizId, attemptId])
+  }, [quiz, quizId, attemptId, startAttempt])
 
   if (isLoading) {
     return <LoadingQuestionCard />
@@ -227,7 +227,7 @@ export default function QuizPlayer({ quizId, onBack }: QuizPlayerProps) {
               <div>
                 <p className="font-medium">Ready to submit?</p>
                 <p className="text-sm text-muted-foreground">
-                  You've answered {Object.keys(answers).length} of{' '}
+                  You have answered {Object.keys(answers).length} of{' '}
                   {totalQuestions} questions
                 </p>
               </div>

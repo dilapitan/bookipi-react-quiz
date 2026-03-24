@@ -1,6 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function NoQuestionsFoundCard({
   onBack,
@@ -15,7 +16,7 @@ export default function NoQuestionsFoundCard({
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground mb-4">
-            This quiz doesn't have any questions yet.
+            This quiz does not have any questions yet.
           </p>
           <Button onClick={onBack} variant="outline">
             <ArrowLeft className="w-4 h-4 mr-2" />

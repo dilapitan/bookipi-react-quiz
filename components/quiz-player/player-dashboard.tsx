@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-
 import { useQuizzes } from '@/services/quizQueries'
 
 import QuizPlayer from './player/quiz-player'

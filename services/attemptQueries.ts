@@ -46,12 +46,21 @@ export function useAnswerQuestion(
   })
 }
 
+interface SubmitAttemptResponse {
+  score: number
+  details: Array<{
+    questionId: number
+    correct: boolean
+    expected?: string
+  }>
+}
+
 export function useSubmitAttempt(
-  options?: UseMutationOptions<void, Error, number>
+  options?: UseMutationOptions<SubmitAttemptResponse, Error, number>
 ) {
   return useMutation({
     mutationFn: (attemptId: number) =>
-      api.post<void>(`/attempts/${attemptId}/submit`),
+      api.post<SubmitAttemptResponse>(`/attempts/${attemptId}/submit`),
     ...options,
   })
 }

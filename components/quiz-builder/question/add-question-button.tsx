@@ -34,6 +34,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import {
+  questionType as questionTypeEnum,
   createQuestionSchema,
   type QuestionType,
   CreateQuestion,
@@ -57,7 +58,7 @@ export default function AddQuestionButton({
     resolver: zodResolver(createQuestionSchema),
     defaultValues: {
       quizId,
-      type: 'mcq',
+      type: questionTypeEnum.enum.mcq,
       prompt: '',
       options: ['', ''],
       correctAnswer: '',
@@ -102,7 +103,7 @@ export default function AddQuestionButton({
     setIsOpen(false)
     form.reset({
       quizId,
-      type: 'mcq',
+      type: questionTypeEnum.enum.mcq,
       prompt: '',
       options: ['', ''],
       correctAnswer: '',
@@ -135,14 +136,16 @@ export default function AddQuestionButton({
 
   function onSubmit(data: CreateQuestion) {
     const validOptions =
-      data.type === 'mcq' ? data.options?.filter(opt => opt.trim()) : undefined
+      data.type === questionTypeEnum.enum.mcq
+        ? data.options?.filter(opt => opt.trim())
+        : undefined
 
     createQuestion.mutate({
       ...data,
       prompt: data.prompt.trim(),
       options: validOptions,
       correctAnswer:
-        data.type === 'mcq'
+        data.type === questionTypeEnum.enum.mcq
           ? data.correctAnswer?.trim()
           : data.correctAnswer || undefined,
     })
@@ -184,7 +187,7 @@ export default function AddQuestionButton({
                         onValueChange={value => {
                           field.onChange(value as QuestionType)
                           // Reset options and correctAnswer when changing type
-                          if (value !== 'mcq') {
+                          if (value !== questionTypeEnum.enum.mcq) {
                             form.setValue('options', undefined)
                             form.setValue('correctAnswer', '')
                             form.clearErrors('options')
@@ -233,7 +236,7 @@ export default function AddQuestionButton({
                 />
 
                 {/* MCQ Options */}
-                {questionType === 'mcq' && (
+                {questionType === questionTypeEnum.enum.mcq && (
                   <Controller
                     name="options"
                     control={form.control}
@@ -293,9 +296,11 @@ export default function AddQuestionButton({
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor="correctAnswer">
                         Correct Answer{' '}
-                        {questionType === 'mcq' ? '(required)' : '(optional)'}
+                        {questionType === questionTypeEnum.enum.mcq
+                          ? '(required)'
+                          : '(optional)'}
                       </FieldLabel>
-                      {questionType === 'mcq' ? (
+                      {questionType === questionTypeEnum.enum.mcq ? (
                         <Select
                           value={field.value || ''}
                           onValueChange={field.onChange}

@@ -18,7 +18,7 @@ export const createQuestionSchema = questionSchema
   })
   .refine(
     data => {
-      if (data.type === 'mcq') {
+      if (data.type === questionType.enum.mcq) {
         return (
           data.options &&
           data.options.length >= 2 &&
@@ -34,7 +34,7 @@ export const createQuestionSchema = questionSchema
   )
   .refine(
     data => {
-      if (data.type === 'mcq') {
+      if (data.type === questionType.enum.mcq) {
         return data.correctAnswer && data.correctAnswer.trim().length > 0
       }
       return true

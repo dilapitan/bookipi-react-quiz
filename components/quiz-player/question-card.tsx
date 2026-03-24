@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import type { Question } from '@/schema/questionSchema'
+import { questionType, type Question } from '@/schema/questionSchema'
 
 interface QuestionCardProps {
   question: Question
@@ -24,16 +24,16 @@ export default function QuestionCard({
         <div className="flex gap-2 mt-2">
           <span
             className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium ${
-              question.type === 'mcq'
+              question.type === questionType.enum.mcq
                 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                : question.type === 'short'
+                : question.type === questionType.enum.short
                   ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
                   : 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
             }`}
           >
-            {question.type === 'mcq'
+            {question.type === questionType.enum.mcq
               ? 'Multiple Choice'
-              : question.type === 'short'
+              : question.type === questionType.enum.short
                 ? 'Short Answer'
                 : 'Code'}
           </span>
@@ -41,7 +41,7 @@ export default function QuestionCard({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Multiple Choice Question */}
-        {question.type === 'mcq' && question.options && (
+        {question.type === questionType.enum.mcq && question.options && (
           <div className="space-y-2">
             {question.options.map((option, index) => (
               <div
@@ -74,7 +74,7 @@ export default function QuestionCard({
         )}
 
         {/* Short Answer Question */}
-        {question.type === 'short' && (
+        {question.type === questionType.enum.short && (
           <div className="space-y-2">
             <Label htmlFor={`answer-${question.id}`}>Your Answer</Label>
             <Input
@@ -88,7 +88,7 @@ export default function QuestionCard({
         )}
 
         {/* Code Question */}
-        {question.type === 'code' && (
+        {question.type === questionType.enum.code && (
           <div className="space-y-2">
             <Label htmlFor={`answer-${question.id}`}>Your Code</Label>
             <Textarea

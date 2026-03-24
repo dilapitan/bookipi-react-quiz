@@ -1,15 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useQuizWithQuestions } from '@/services/quizQueries'
+import {
+  useStartAttempt,
+  useAnswerQuestion,
+  useSubmitAttempt,
+} from '@/services/attemptQueries'
 
 import QuestionCard from '../question-card'
+import ResultsDashboard from '../results/results-dashboard'
 import NoQuestionsFoundCard from './no-questions-found-card'
 import ErrorQuestionCard from './error-question-card'
 import LoadingQuestionCard from './loading-question-card'
@@ -19,10 +24,43 @@ interface QuizPlayerProps {
   onBack: () => void
 }
 
+interface SubmitResult {
+  score: number
+  details: Array<{
+    questionId: number
+    correct: boolean
+    expected?: string
+  }>
+}
+
 export default function QuizPlayer({ quizId, onBack }: QuizPlayerProps) {
   const { data: quiz, isLoading, error } = useQuizWithQuestions(quizId)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})
+  const [attemptId, setAttemptId] = useState<number | null>(null)
+  const [submitResult, setSubmitResult] = useState<SubmitResult | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const startAttempt = useStartAttempt()
+  const answerQuestion = useAnswerQuestion()
+  const submitAttempt = useSubmitAttempt()
+
+  // Start attempt when quiz loads
+  useEffect(() => {
+    if (quiz && !attemptId && !startAttempt.isPending) {
+      startAttempt.mutate(
+        { quizId },
+        {
+          onSuccess: attempt => {
+            setAttemptId(attempt.id)
+          },
+          onError: error => {
+            console.error('Failed to start attempt:', error)
+          },
+        }
+      )
+    }
+  }, [quiz, quizId, attemptId])
 
   if (isLoading) {
     return <LoadingQuestionCard />
@@ -49,6 +87,18 @@ export default function QuizPlayer({ quizId, onBack }: QuizPlayerProps) {
       ...prev,
       [questionId]: answer,
     }))
+
+    // Save answers
+    if (attemptId) {
+      answerQuestion.mutate(
+        { attemptId, questionId, value: answer },
+        {
+          onError: error => {
+            console.error('Failed to save answer:', error)
+          },
+        }
+      )
+    }
   }
 
   const handleNext = () => {
@@ -65,6 +115,37 @@ export default function QuizPlayer({ quizId, onBack }: QuizPlayerProps) {
 
   const handleQuestionJump = (index: number) => {
     setCurrentQuestionIndex(index)
+  }
+
+  const handleSubmit = () => {
+    if (!attemptId) {
+      console.error('No attempt started')
+      return
+    }
+
+    setIsSubmitting(true)
+    submitAttempt.mutate(attemptId, {
+      onSuccess: result => {
+        setSubmitResult(result)
+        setIsSubmitting(false)
+      },
+      onError: error => {
+        console.error('Failed to submit attempt:', error)
+        setIsSubmitting(false)
+      },
+    })
+  }
+
+  // Show results if quiz has been submitted
+  if (submitResult && quiz) {
+    return (
+      <ResultsDashboard
+        score={submitResult.score}
+        details={submitResult.details}
+        questions={quiz.questions}
+        totalQuestions={totalQuestions}
+      />
+    )
   }
 
   return (
@@ -150,7 +231,9 @@ export default function QuizPlayer({ quizId, onBack }: QuizPlayerProps) {
                   {totalQuestions} questions
                 </p>
               </div>
-              <Button size="lg">Submit Quiz</Button>
+              <Button size="lg" onClick={handleSubmit} disabled={isSubmitting}>
+                {isSubmitting ? 'Submitting...' : 'Submit Quiz'}
+              </Button>
             </div>
           </CardContent>
         </Card>

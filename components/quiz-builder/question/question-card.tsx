@@ -4,6 +4,8 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useQueryClient } from '@tanstack/react-query'
 import { GripVertical, Trash2 } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
+import rehypeHighlight from 'rehype-highlight'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
@@ -94,12 +96,17 @@ export default function QuestionCard({
 
             {/* Question Prompt */}
             <div className="flex-1">
-              <CardTitle className="text-sm md:text-lg text-violet-900 dark:text-violet-100">
+              <CardTitle className="text-sm md:text-lg text-violet-900 dark:text-violet-100 mb-2">
                 {displayPosition !== undefined
                   ? displayPosition + 1
                   : question.position}
-                .) {question.prompt}
+                .)
               </CardTitle>
+              <div className="prose prose-sm dark:prose-invert max-w-none">
+                <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+                  {question.prompt}
+                </ReactMarkdown>
+              </div>
             </div>
 
             {/* Delete button */}

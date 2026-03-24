@@ -162,7 +162,7 @@ export default function AddQuestionButton({
       </Button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="min-w-xl max-w-2xl max-h-[90vh] overflow-y-auto">
           <form id="add-question-form" onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeader>
               <DialogTitle>Add New Question</DialogTitle>

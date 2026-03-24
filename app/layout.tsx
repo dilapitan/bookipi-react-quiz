@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/sonner'
 import type { Metadata } from 'next'
 
 import './globals.css'
+import 'highlight.js/styles/github-dark.css'
 
 const inter = Inter({
   variable: '--font-inter',

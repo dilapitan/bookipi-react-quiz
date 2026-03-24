@@ -1,6 +1,9 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import ReactMarkdown from 'react-markdown'
+import rehypeHighlight from 'rehype-highlight'
+
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -22,7 +25,11 @@ export default function QuestionCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{question.prompt}</CardTitle>
+        <div className="prose dark:prose-invert max-w-none">
+          <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+            {question.prompt}
+          </ReactMarkdown>
+        </div>
         <div className="flex gap-2 mt-2">
           <span
             className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium ${

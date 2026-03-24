@@ -1,6 +1,6 @@
 import { screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { render, mockQuiz, mockQuestion } from '../utils/test-utils'
+
 import QuizPlayer from '@/components/quiz-player/player/quiz-player'
 import {
   useStartAttempt,
@@ -8,6 +8,8 @@ import {
   useSubmitAttempt,
 } from '@/services/attemptQueries'
 import { useQuizWithQuestions } from '@/services/quizQueries'
+
+import { render, mockQuiz, mockQuestion } from '../utils/test-utils'
 
 jest.mock('@/services/attemptQueries')
 jest.mock('@/services/quizQueries')

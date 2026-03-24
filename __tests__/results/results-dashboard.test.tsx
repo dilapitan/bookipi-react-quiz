@@ -1,6 +1,8 @@
 import { screen } from '@testing-library/react'
-import { render, mockQuestion } from '../utils/test-utils'
+
 import ResultsDashboard from '@/components/quiz-player/results/results-dashboard'
+
+import { render, mockQuestion } from '../utils/test-utils'
 
 describe('ResultsDashboard', () => {
   const mockQuestions = [

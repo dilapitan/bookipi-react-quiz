@@ -1,8 +1,10 @@
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { render } from '../utils/test-utils'
+
 import CreateQuizCard from '@/components/quiz-builder/quiz/create-quiz-card'
 import { useCreateQuiz } from '@/services/quizQueries'
+
+import { render } from '../utils/test-utils'
 
 // Mock the hooks
 jest.mock('@/services/quizQueries')

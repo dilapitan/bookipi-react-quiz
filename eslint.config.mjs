@@ -21,6 +21,10 @@ const eslintConfig = defineConfig([
     'components/ui/**',
     // Backend if you're only working on frontend
     'backend/**',
+    // Test files
+    '__tests__/**',
+    'jest.config.ts',
+    'jest.setup.ts',
   ]),
   {
     plugins: {

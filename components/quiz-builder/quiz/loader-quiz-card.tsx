@@ -3,7 +3,10 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export default function LoaderQuizCard() {
   return (
-    <div data-testid="loader-quiz-card" className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div
+      data-testid="loader-quiz-card"
+      className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+    >
       {[1, 2, 3].map(i => (
         <Card key={i} className="border-violet-200 dark:border-violet-900">
           <CardHeader>

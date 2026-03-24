@@ -2,6 +2,12 @@
 
 A React-based quiz application that allows users to create coding-related quizzes and take them with built-in anti-cheat features.
 
+## Live Demo
+
+The application is currently deployed on Vercel, with the backend running on a personal Render's free tier. Some updates were made to the backend repository, including CORS adjustments and the addition of a health check endpoint. The deployment will be taken down after the technical review, and the repository will be changed from public to private.
+
+Access it here: [Quizizy](https://bookipi-react-quiz.vercel.app/)
+
 ## Description
 
 Quiz Maker is a full-stack application for creating and taking coding quizzes. Users can build quizzes with multiple question types, including multiple choice and short answer questions with optional code snippets. The player interface includes lightweight anti-cheat monitoring to track focus events and paste actions.

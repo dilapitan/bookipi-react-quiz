@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Quiz Maker
+
+A React-based quiz application that allows users to create coding-related quizzes and take them with built-in anti-cheat features.
+
+## Description
+
+Quiz Maker is a full-stack application for creating and taking coding quizzes. Users can build quizzes with multiple question types, including multiple choice and short answer questions with optional code snippets. The player interface includes lightweight anti-cheat monitoring to track focus events and paste actions.
+
+## Features
+
+### Builder Mode
+- Create quizzes with title and description
+- Add multiple question types (Multiple Choice, Short Answer)
+- Include optional code snippets in questions
+- Edit and manage questions with drag-and-drop reordering
+- Set time limits for quizzes
+
+### Player Mode
+- Load quizzes by ID
+- Navigate between questions
+- Submit answers and view results
+- Anti-cheat monitoring (tab switches, paste detection)
+- Timer display with warnings
+- Results summary with score and anti-cheat report
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (React 19)
+- **UI Components**: ShadCN UI with Radix UI primitives
+- **Styling**: Tailwind CSS
+- **State Management**: TanStack Query v5
+- **Forms**: React Hook Form with Zod validation
+- **Backend**: Node.js + SQLite (included in `/backend`)
+- **Icons**: Lucide React
+- **Drag & Drop**: dnd-kit
+- **Theme**: next-themes (dark/light mode)
+
+## Directory Structure
+
+```
+bookipi-react-quiz/
+├── app/                    # Next.js app directory
+│   ├── builder/           # Quiz builder pages
+│   ├── login/             # Login page
+│   ├── context/           # React context providers
+│   └── enums/             # TypeScript enums
+├── components/            # React components
+│   ├── quiz-builder/      # Builder-specific components
+│   ├── quiz-player/       # Player-specific components
+│   └── ui/                # ShadCN UI components
+├── hooks/                 # Custom React hooks
+├── lib/                   # Utility functions
+├── services/              # API service layer
+├── schema/                # Zod schemas
+├── backend/               # Backend API (Node.js + SQLite)
+└── public/                # Static assets
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 20+
+- npm, yarn, pnpm, or bun
 
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Set up environment variables:
+```bash
+cp env-example .env.local
+```
+Edit `.env.local` and configure your API URL and token if needed.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. Start the backend server (in a separate terminal):
+```bash
+cd backend
+npm install
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. Run the development server:
+```bash
+npm run dev
+```
 
-## Learn More
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-To learn more about Next.js, take a look at the following resources:
+### Available Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run lint:fix` - Fix ESLint errors
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Usage
 
-## Deploy on Vercel
+1. **Create a Quiz**: Navigate to the builder, add questions with answers, and save
+2. **Take a Quiz**: Enter a quiz ID on the home page to start
+3. **View Results**: Submit answers to see your score and anti-cheat summary
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Authentication
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Include the header `Authorization: Bearer dev-token` with API requests (or configure your own token in `.env.local`).

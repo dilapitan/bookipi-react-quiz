@@ -167,7 +167,10 @@ export default function QuizMetadataCard({ quiz }: { quiz: Quiz }) {
           <div className="flex items-center gap-2">
             <Clock className="w-5 h-5" />
             <span className="font-medium">
-              Time Limit: {Math.floor(quiz.timeLimitSeconds / 60)} minutes
+              Time Limit:
+              {Math.floor(quiz.timeLimitSeconds / 60) > 0
+                ? `${Math.floor(quiz.timeLimitSeconds / 60)} minutes`
+                : `${Math.floor(quiz.timeLimitSeconds)} seconds`}
             </span>
           </div>
         </div>

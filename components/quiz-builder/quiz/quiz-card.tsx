@@ -22,7 +22,7 @@ export default function QuizCard({ quiz }: { quiz: Quiz }) {
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <CardTitle className="truncate w-48 md:w-60 text-violet-900 dark:text-violet-100 group-hover:text-violet-700 dark:group-hover:text-violet-300 line-clamp-2">
+              <CardTitle className="truncate w-48 md:w-52 lg:w-60  text-violet-900 dark:text-violet-100 group-hover:text-violet-700 dark:group-hover:text-violet-300 line-clamp-2">
                 {quiz.title}
               </CardTitle>
               <CardDescription className="mt-2 line-clamp-2">

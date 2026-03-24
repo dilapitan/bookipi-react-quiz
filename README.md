@@ -42,6 +42,7 @@ Quiz Maker is a full-stack application for creating and taking coding quizzes. U
 - **Icons**: Lucide React
 - **Drag & Drop**: dnd-kit
 - **Theme**: next-themes (dark/light mode)
+- **Testing**: Jest + React Testing Library
 
 ## Directory Structure
 
@@ -60,6 +61,11 @@ bookipi-react-quiz/
 ├── lib/                   # Utility functions
 ├── services/              # API service layer
 ├── schema/                # Zod schemas
+├── __tests__/             # Test files
+│   ├── builder/           # Builder component tests
+│   ├── player/            # Player component tests
+│   ├── results/           # Results component tests
+│   └── utils/             # Test utilities
 ├── backend/               # Backend API (Node.js + SQLite)
 └── public/                # Static assets
 ```
@@ -111,12 +117,50 @@ npm run dev
 - `npm start` - Start production server
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix ESLint errors
+- `npm test` - Run tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:coverage` - Run tests with coverage report
 
 ## Usage
 
 1. **Create a Quiz**: Navigate to the builder, add questions with answers, and save
 2. **Take a Quiz**: Enter a quiz ID on the home page to start
 3. **View Results**: Submit answers to see your score and anti-cheat summary
+
+## Testing
+
+The project includes comprehensive UI integration tests covering critical user flows. AI assistance (Claude) was used to help scaffold some of the test cases.
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+### Test Coverage
+
+- **Builder Dashboard** (5 tests): Quiz list display, loading/error states, quiz creation
+- **Create Quiz** (7 tests): Form interaction, validation, submission, dialog behavior
+- **Quiz Player** (10 tests): Loading states, navigation, answer submission, timer, anti-cheat
+- **Results Dashboard** (11 tests): Score calculation, question breakdown, anti-cheat violations
+
+**Total: 33 tests** covering the main application features.
+
+### Test Structure
+
+Tests are organized in the `__tests__/` directory:
+
+- `builder/` - Quiz builder component tests
+- `player/` - Quiz player component tests
+- `results/` - Results display tests
+- `utils/` - Shared test utilities and mock data
 
 ## Authentication
 

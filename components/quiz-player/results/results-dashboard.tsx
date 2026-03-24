@@ -3,10 +3,17 @@ import { CheckCircle2, XCircle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { questionType, type Question } from '@/schema'
 
+import AntiCheatSummary from './anti-cheat-summary'
+
 interface QuestionResult {
   questionId: number
   correct: boolean
   expected?: string
+}
+
+interface AntiCheatEvents {
+  tabSwitches: number
+  pastes: number
 }
 
 interface ResultsDashboardProps {
@@ -14,6 +21,8 @@ interface ResultsDashboardProps {
   details: QuestionResult[]
   questions: Question[]
   totalQuestions: number
+  antiCheatEvents?: AntiCheatEvents
+  isTimeUp?: boolean
 }
 
 export default function ResultsDashboard({
@@ -21,6 +30,8 @@ export default function ResultsDashboard({
   details,
   questions,
   totalQuestions,
+  antiCheatEvents,
+  isTimeUp,
 }: ResultsDashboardProps) {
   // Count only gradable questions (mcq and short, exclude code)
   const gradableQuestions = questions.filter(
@@ -33,9 +44,26 @@ export default function ResultsDashboard({
    */
   const gradableCount = gradableQuestions.length
   const percentage = gradableCount > 0 ? (score / gradableCount) * 100 : 0
+  const hasAntiCheatEvents =
+    antiCheatEvents &&
+    (antiCheatEvents.tabSwitches > 0 || antiCheatEvents.pastes > 0)
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      {/* Time's Up Banner */}
+      {isTimeUp && (
+        <Card className="border-red-500 bg-red-500/10">
+          <CardContent className="pt-6">
+            <p className="text-center text-2xl font-bold text-red-700 dark:text-red-400">
+              ⏰ Time&apos;s Up!
+            </p>
+            <p className="text-center text-sm text-muted-foreground mt-2">
+              Your quiz has been automatically submitted
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Overall Score */}
       <Card className="border-primary">
         <CardHeader>
@@ -56,6 +84,11 @@ export default function ResultsDashboard({
           )}
         </CardContent>
       </Card>
+
+      {/* Anti-Cheat Summary */}
+      {antiCheatEvents && hasAntiCheatEvents && (
+        <AntiCheatSummary antiCheatEvents={antiCheatEvents} />
+      )}
 
       {/* Per-Question Results */}
       <Card>

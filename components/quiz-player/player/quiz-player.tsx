@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react'
 
-import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Clock } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useAntiCheat } from '@/hooks/useAntiCheat'
 import {
   useStartAttempt,
   useAnswerQuestion,
@@ -17,6 +18,7 @@ import QuestionCard from '../question-card'
 import ErrorQuestionCard from './error-question-card'
 import LoadingQuestionCard from './loading-question-card'
 import NoQuestionsFoundCard from './no-questions-found-card'
+import AntiCheatWarningDialog from '../anti-cheat-warning-dialog'
 import ResultsDashboard from '../results/results-dashboard'
 
 interface QuizPlayerProps {
@@ -35,18 +37,53 @@ interface SubmitResult {
 
 export default function QuizPlayer({ quizId, onBack }: QuizPlayerProps) {
   const { data: quiz, isLoading, error } = useQuizWithQuestions(quizId)
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [attemptId, setAttemptId] = useState<number | null>(null)
   const [submitResult, setSubmitResult] = useState<SubmitResult | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [showWarningDialog, setShowWarningDialog] = useState<boolean>(true)
+  const [quizStarted, setQuizStarted] = useState<boolean>(false)
+  const [antiCheatEvents, setAntiCheatEvents] = useState<{
+    tabSwitches: number
+    pastes: number
+  }>({
+    tabSwitches: 0,
+    pastes: 0,
+  })
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(null)
+  const [isTimeUp, setIsTimeUp] = useState<boolean>(false)
 
   const startAttempt = useStartAttempt()
   const answerQuestion = useAnswerQuestion()
   const submitAttempt = useSubmitAttempt()
 
-  // Start attempt when quiz loads
-  useEffect(() => {
+  // Anti-cheat tracking (disabled after submission)
+  const { logPasteEvent } = useAntiCheat({
+    attemptId,
+    // This is for preventing the logic/400 errors after the form is submitted
+    enabled: quizStarted && !submitResult,
+    onTabSwitch: () => {
+      setAntiCheatEvents(prev => ({
+        ...prev,
+        tabSwitches: prev.tabSwitches + 1,
+      }))
+    },
+    onPaste: () => {
+      setAntiCheatEvents(prev => ({ ...prev, pastes: prev.pastes + 1 }))
+    },
+  })
+
+  // Start attempt when user accepts the warning
+  const handleAcceptWarning = () => {
+    setShowWarningDialog(false)
+    setQuizStarted(true)
+
+    // Initialize timer if quiz has time limit
+    if (quiz?.timeLimitSeconds) {
+      setTimeRemaining(quiz.timeLimitSeconds)
+    }
+
     if (quiz && !attemptId && !startAttempt.isPending) {
       startAttempt.mutate(
         { quizId },
@@ -60,7 +97,52 @@ export default function QuizPlayer({ quizId, onBack }: QuizPlayerProps) {
         }
       )
     }
-  }, [quiz, quizId, attemptId, startAttempt])
+  }
+
+  // Countdown timer effect: 5:00, 4:59, 4:58, ... 0
+  useEffect(() => {
+    if (timeRemaining === null || timeRemaining <= 0 || submitResult) {
+      return
+    }
+
+    const interval = setInterval(() => {
+      setTimeRemaining(prev => {
+        if (prev === null || prev <= 1) {
+          setIsTimeUp(true)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [timeRemaining, submitResult])
+
+  // Auto-submit when time runs out
+  useEffect(() => {
+    if (isTimeUp && attemptId && !submitResult && !isSubmitting) {
+      setIsSubmitting(true)
+      submitAttempt.mutate(attemptId, {
+        onSuccess: result => {
+          setSubmitResult(result)
+          setIsSubmitting(false)
+        },
+        onError: error => {
+          console.error('Failed to submit attempt:', error)
+          setIsSubmitting(false)
+        },
+      })
+    }
+  }, [isTimeUp, attemptId, submitResult, isSubmitting, submitAttempt])
+
+  // Format time as MM:SS
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins.toString().padStart(2, '0')}:${secs
+      .toString()
+      .padStart(2, '0')}`
+  }
 
   if (isLoading) {
     return <LoadingQuestionCard />
@@ -79,6 +161,15 @@ export default function QuizPlayer({ quizId, onBack }: QuizPlayerProps) {
     return <NoQuestionsFoundCard onBack={onBack} />
   }
 
+  // Show warning dialog before quiz starts
+  if (showWarningDialog) {
+    return <AntiCheatWarningDialog open={true} onAccept={handleAcceptWarning} />
+  }
+
+  /**
+   * Using an index based method for switching thru questions either by
+   * prev and next buttons, or jumping to a certain question index.
+   */
   const currentQuestion = quiz.questions[currentQuestionIndex]
   const totalQuestions = quiz.questions.length
 
@@ -144,20 +235,41 @@ export default function QuizPlayer({ quizId, onBack }: QuizPlayerProps) {
         details={submitResult.details}
         questions={quiz.questions}
         totalQuestions={totalQuestions}
+        antiCheatEvents={antiCheatEvents}
+        isTimeUp={isTimeUp}
       />
     )
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 border-2 border-green-500 rounded-lg p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <Button onClick={onBack} variant="ghost">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Dashboard
         </Button>
-        <div className="text-sm text-muted-foreground">
-          Question {currentQuestionIndex + 1} of {totalQuestions}
+        <div className="flex items-center gap-4">
+          {/* Count down timer */}
+          {timeRemaining !== null && (
+            <div
+              className={`flex items-center gap-2 px-3 py-1 rounded-md font-medium ${
+                timeRemaining <= 60
+                  ? 'bg-red-500/20 text-red-700 dark:text-red-300'
+                  : timeRemaining <= 300
+                    ? 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-300'
+                    : 'bg-blue-500/20 text-blue-700 dark:text-blue-300'
+              }`}
+            >
+              <Clock className="w-4 h-4" />
+              <span>{formatTime(timeRemaining)}</span>
+            </div>
+          )}
+
+          {/* Question numbers */}
+          <div className="text-sm text-muted-foreground">
+            Question {currentQuestionIndex + 1} of {totalQuestions}
+          </div>
         </div>
       </div>
 
@@ -178,17 +290,19 @@ export default function QuizPlayer({ quizId, onBack }: QuizPlayerProps) {
         onAnswerChange={answer =>
           handleAnswerChange(currentQuestion.id, answer)
         }
+        onPaste={logPasteEvent}
       />
 
       {/* Navigation */}
       <div className="flex items-center justify-between">
+        {/* Previous Button */}
         <Button
           onClick={handlePrevious}
           disabled={currentQuestionIndex === 0}
           variant="outline"
         >
           <ChevronLeft className="w-4 h-4 mr-2" />
-          Previous
+          <span className="hidden sm:block">Previous</span>
         </Button>
 
         <div className="flex gap-2">
@@ -209,12 +323,13 @@ export default function QuizPlayer({ quizId, onBack }: QuizPlayerProps) {
           ))}
         </div>
 
+        {/* Next Button */}
         <Button
           onClick={handleNext}
           disabled={currentQuestionIndex === totalQuestions - 1}
           variant="outline"
         >
-          Next
+          <span className="hidden sm:block">Next</span>
           <ChevronRight className="w-4 h-4 ml-2" />
         </Button>
       </div>

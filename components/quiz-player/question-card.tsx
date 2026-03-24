@@ -10,12 +10,14 @@ interface QuestionCardProps {
   question: Question
   answer: string
   onAnswerChange: (answer: string) => void
+  onPaste?: () => void
 }
 
 export default function QuestionCard({
   question,
   answer,
   onAnswerChange,
+  onPaste,
 }: QuestionCardProps) {
   return (
     <Card>
@@ -83,6 +85,8 @@ export default function QuestionCard({
               placeholder="Type your answer here..."
               value={answer}
               onChange={e => onAnswerChange(e.target.value)}
+              onPaste={onPaste}
+              autoComplete="off"
             />
           </div>
         )}
@@ -96,6 +100,7 @@ export default function QuestionCard({
               placeholder="Write your code here..."
               value={answer}
               onChange={e => onAnswerChange(e.target.value)}
+              onPaste={onPaste}
               className="font-mono min-h-50"
             />
           </div>
